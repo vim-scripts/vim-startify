@@ -1,7 +1,7 @@
 " Plugin:      https://github.com/mhinz/vim-startify
 " Description: Start screen displaying recently used stuff.
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
-" Version:     1.0
+" Version:     1.1
 
 if exists('g:loaded_startify') || &cp
   finish
@@ -11,9 +11,6 @@ let g:loaded_startify = 1
 " Init {{{1
 let g:startify_session_dir = resolve(expand(get(g:, 'startify_session_dir', '~/.vim/session')))
 
-command! -nargs=? -bar SSave call startify#save_session(<args>)
-command! -nargs=? -bar SLoad call startify#load_session(<args>)
-
 augroup startify
   autocmd!
   autocmd VimEnter *
@@ -22,6 +19,9 @@ augroup startify
         \   call cursor(6, 5) |
         \endif
 augroup END
+
+command! -nargs=? -bar -complete=customlist,startify#get_session_names SSave call startify#save_session(<f-args>)
+command! -nargs=? -bar -complete=customlist,startify#get_session_names SLoad call startify#load_session(<f-args>)
 
 " Function: s:start {{{1
 function! s:start() abort

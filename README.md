@@ -5,7 +5,7 @@ Startify basically provides two things:
 
 _1)_ If you start Vim without giving any filenames to it (or pipe stuff to it so
    it reads from STDIN), startify will show a small but pretty start screen
-   which shows recently used files and sessions by default.
+   which shows recently used files (using viminfo) and sessions by default.
 
    Additionally, you can define bookmarks, thus entries for files that always
    should be available in the start screen.
@@ -18,6 +18,9 @@ _2)_ It eases handling of loading and saving sessions by only working with a
 
       :SLoad    load a session
       :SSave    save a session
+
+NOTE: Both commands can also take session names directly as an argument. You can
+also make use of completion via `<c-u>` and `<tab>`.
 
 The default settings are pretty sane, so it should work without any
 configuration.
@@ -41,7 +44,7 @@ If you have no preferred installation method, I suggest using tpope's pathogen:
 1. mkdir -p ~/.vim/autoload && cd ~/.vim/autoload
 1. ln -s ../bundle/vim-pathogen/autoload/pathogen.vim
 
-Afterwards installing Sy is as easy as pie:
+Afterwards installing vim-startify is as easy as pie:
 
 2. git clone https://github.com/mhinz/vim-startify ~/.vim/bundle/vim-startify
 2. start Vim

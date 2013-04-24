@@ -38,7 +38,7 @@ Startify basically provides two things:
 
 1) If you start Vim without giving any filenames to it (or pipe stuff to it so
    it reads from STDIN), startify will show a small but pretty start screen
-   which shows recently used files and sessions by default.
+   which shows recently used files (using viminfo) and sessions by default.
 
    Additionally, you can define bookmarks, thus entries for files that always
    should be available in the start screen.
@@ -105,6 +105,12 @@ There are only two commands for handling sessions:
 
     :SLoad    load a session
     :SSave    save a session
+
+These take either 0 or 1 argument. If you don't specify the session name as an
+argument, they will just ask for it.
+
+Providing only a part of the session name works too, if you complete the
+argument with either <c-u> or <tab> afterwards.
 
 
 ==============================================================================
