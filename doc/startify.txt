@@ -20,15 +20,16 @@ CONTENTS                                                     *startify-contents*
     2.Usage..........................................|startify-usage|
     3.Options........................................|startify-options|
     4.Commands.......................................|startify-commands|
-    5.Author.........................................|startify-author|
-    6.License........................................|startify-license|
+    5.FAQ............................................|startify-faq|
+    6.Author.........................................|startify-author|
+    7.License........................................|startify-license|
 
 
 ==============================================================================
 1. Intro                                                        *startify-intro*
 
-Startify is a zero-conf plugin which shows recently used files and sessions
-that were saved to a certain directory.
+Startify is a zero-conf plugin which shows recently used files, bookmarks and
+sessions that were saved to a certain directory.
 
 
 ==============================================================================
@@ -43,8 +44,13 @@ Startify basically provides two things:
    Additionally, you can define bookmarks, thus entries for files that always
    should be available in the start screen.
 
-   You can either navigate to a certain menu entry or you just key in whatever
-   is written between the square brackets on that line.
+   You can either navigate to a certain menu entry and hit enter or you just
+   key in whatever is written between the square brackets on that line.
+
+   Per default the startify buffer gets closed automatically, if an entry was
+   selected.
+
+   You can reopen the screen via :Startify.
 
 2) It eases handling of loading and saving sessions by only working with a
    certain directory. Two commands are used for convenience:
@@ -67,6 +73,8 @@ default values.
     let g:startify_session_dir = '~/.vim/session'
 
 The directory to save/load sessions to/from.
+
+The default for Windows systems is '$HOME\vimfiles\session'.
 
 
 ============-
@@ -97,11 +105,41 @@ The amount of files to list.
 A list of files to bookmark. Those files will always be shown at the bottom of
 the start screen.
 
+============-
+
+    let g:startify_skiplist = []
+
+A list of Vim regular expressions to filter recently used files.
+
+Example:   let g:startify_skiplist = [
+             \ 'COMMIT_EDITMSG',
+             \ $VIMRUNTIME .'/doc',
+             \ 'bundle/.*/doc'
+             \ ]
+
+
+============-
+
+    let g:startify_skiplist_server = []
+
+Do not create the startify buffer, if this is a Vim server instance with a
+name contained in this list.
+
+Example:   let g:startify_skiplist_server = [ 'GVIM' ]
+
+
+============-
+
+    let g:startify_unlisted_buffer = 1
+
+Some bad plugins like minibufexpl break, when there is no listed buffer.
+People can set this variable to 0, to work around that. As a consequence the
+start screen buffer won't be removed, even after triggering an action from the
+start screen.
+
 
 ==============================================================================
 4. Commands                                                  *startify-commands*
-
-There are only two commands for handling sessions:
 
     :SLoad    load a session
     :SSave    save a session
@@ -110,11 +148,43 @@ These take either 0 or 1 argument. If you don't specify the session name as an
 argument, they will just ask for it.
 
 Providing only a part of the session name works too, if you complete the
-argument with either <c-u> or <tab> afterwards.
+argument with either <c-d> or <tab> afterwards.
+
+
+    :Startify
+
+Open the startify buffer.
 
 
 ==============================================================================
-5. About the author                                            *startify-author*
+5. FAQ (Or: Typical rants)                                        *startify-faq*
+
+"I don't want the start screen to use cursorline!"
+--------------------------------------------------
+
+Startify sets its own filetype "startify". Thus one could set buffer-local
+options like this:
+
+    autocmd FileType startify setlocal nocursorline
+
+
+"Last recently used files don't seem to get updated at :Startify!"
+-----------------------------------------------------------
+
+It's because Vim loads the list from viminfo only once, at startup.
+
+
+"I use iTerm2 and have broken colors when using sessions!"
+----------------------------------------------------------
+
+Nothing this plugin could do about. Try playing around with 'sessionoptions'.
+Some people swear it works for them with these settings:
+
+    set sessionoptions=blank,curdir,folds,help,tabpages,winpos
+
+
+==============================================================================
+6. About the author                                            *startify-author*
 
 My nick on Freenode IRC is mhi^.
 
@@ -127,7 +197,7 @@ Thank you for flying mhi airlines. Get the Vim on!
 
 
 ==============================================================================
-6. Licence                                                    *startify-license*
+7. Licence                                                    *startify-license*
 
 Copyright © Marco Hinz. Distributed under the same terms as Vim itself.
 

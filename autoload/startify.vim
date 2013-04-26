@@ -1,7 +1,7 @@
 " Plugin:      https://github.com/mhinz/vim-startify
 " Description: Start screen displaying recently used stuff.
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
-" Version:     1.1
+" Version:     1.2
 
 if exists('g:autoloaded_startify') || &cp
   finish
@@ -16,12 +16,28 @@ function! startify#get_session_names_as_string(lead, ...) abort
   return join(map(split(globpath(g:startify_session_dir, '*'.a:lead.'*', '\n')), 'fnamemodify(v:val, ":t")'), "\n")
 endfunction
 
+function! startify#escape(path) abort
+  return !exists('+shellslash') || &shellslash ? a:path : escape(a:path, '\')
+endfunction
+
+function! startify#get_sep() abort
+  return !exists('+shellslash') || &shellslash ? '/' : '\'
+endfunction
+
+function! startify#process_skiplist(arg) abort
+  for regexp in g:startify_skiplist
+    if a:arg =~# regexp
+      return 1
+    endif
+  endfor
+endfunction
+
 function! startify#save_session(...) abort
   if !isdirectory(g:startify_session_dir)
     echo 'The session directory does not exist: '. g:startify_session_dir
     return
   endif
-  let spath = g:startify_session_dir .'/'. (exists('a:1')
+  let spath = g:startify_session_dir . startify#get_sep() . (exists('a:1')
         \ ? a:1
         \ : input('Save under this session name: ', '', 'custom,startify#get_session_names_as_string'))
         \ | redraw
@@ -42,7 +58,7 @@ function! startify#load_session(...) abort
     echo 'The session directory does not exist: '. g:startify_session_dir
     return
   endif
-  let spath = g:startify_session_dir .'/'. (exists('a:1')
+  let spath = g:startify_session_dir . startify#get_sep() . (exists('a:1')
         \ ? a:1
         \ : input('Load this session: ', '', 'custom,startify#get_session_names_as_string'))
         \ | redraw
