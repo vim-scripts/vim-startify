@@ -1,14 +1,11 @@
 " Plugin:      https://github.com/mhinz/vim-startify
 " Description: Start screen displaying recently used stuff.
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
-" Version:     1.2
+" Version:     1.3
 
 if exists("b:current_syntax")
   finish
 endif
-
-syntax     match  startifyStartify   /startify>/
-highlight  link   startifyStartify   Function
 
 syntax     match  startifyDelimiter  /\[\|\]/
 highlight  link   startifyDelimiter  Delimiter

@@ -1,7 +1,7 @@
 " Plugin:      https://github.com/mhinz/vim-startify
 " Description: Start screen displaying recently used stuff.
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
-" Version:     1.2
+" Version:     1.3
 
 if exists('g:autoloaded_startify') || &cp
   finish
@@ -34,8 +34,18 @@ endfunction
 
 function! startify#save_session(...) abort
   if !isdirectory(g:startify_session_dir)
-    echo 'The session directory does not exist: '. g:startify_session_dir
-    return
+    if exists('*mkdir')
+      echo 'The session directory does not exist: '. g:startify_session_dir .'. Create it?  [y/n]' | redraw
+      if nr2char(getchar()) == 'y'
+        call mkdir(g:startify_session_dir, 'p')
+      else
+        echo
+        return
+      endif
+    else
+      echo 'The session directory does not exist: '. g:startify_session_dir
+      return
+    endif
   endif
   let spath = g:startify_session_dir . startify#get_sep() . (exists('a:1')
         \ ? a:1

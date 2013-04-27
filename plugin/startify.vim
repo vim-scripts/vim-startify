@@ -1,7 +1,7 @@
 " Plugin:      https://github.com/mhinz/vim-startify
 " Description: Start screen displaying recently used stuff.
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
-" Version:     1.2
+" Version:     1.3
 
 if exists('g:loaded_startify') || &cp
   finish
@@ -39,7 +39,7 @@ function! s:insane_in_the_membrane() abort
   endif
   setfiletype startify
 
-  call append('$', ['   startify>', '', '   [e]  <empty buffer>'])
+  call append('$', '   [e]  <empty buffer>')
   let cnt = 0
   let sep = startify#get_sep()
 
@@ -52,7 +52,7 @@ function! s:insane_in_the_membrane() abort
         continue
       endif
       call append('$', '   ['. cnt .']'. repeat(' ', 3 - strlen(string(cnt))) . fname)
-      execute 'nnoremap <buffer> '. cnt .' :edit '. startify#escape(fname) .'<cr>'
+      execute 'nnoremap <buffer> '. cnt .' :edit '. startify#escape(fname) .' <bar> lcd %:h<cr>'
       let cnt += 1
       if cnt == numfiles
         break
@@ -80,7 +80,7 @@ function! s:insane_in_the_membrane() abort
       endif
       let cnt += 1
       call append('$', '   ['. cnt .']'. repeat(' ', 3 - strlen(string(cnt))) . fname)
-      execute 'nnoremap <buffer> '. cnt .' :edit '. startify#escape(fname) .'<cr>'
+      execute 'nnoremap <buffer> '. cnt .' :edit '. startify#escape(fname) .' <bar> lcd %:h<cr>'
     endfor
   endif
 
@@ -88,15 +88,25 @@ function! s:insane_in_the_membrane() abort
 
   setlocal nomodifiable nomodified
 
-  nnoremap <buffer> q :quit<cr>
   nnoremap <buffer><silent> e :enew<cr>
-  nnoremap <buffer><silent> <cr> :normal <c-r><c-w><cr>
+  nnoremap <buffer> <cr> :normal <c-r><c-w><cr>
+  nnoremap <buffer> <2-LeftMouse> :execute 'normal '. matchstr(getline('.'), '\w\+')<cr>
+  nnoremap <buffer> q
+        \ :if len(filter(range(0, bufnr('$')), 'buflisted(v:val)')) > 1 <bar>
+        \   bd <bar>
+        \ else <bar>
+        \   quit <bar>
+        \ endif<cr>
+
+  if exists('g:startify_empty_buffer_key')
+    execute 'nnoremap <buffer><silent> '. g:startify_empty_buffer_key .' :enew<cr>'
+  endif
 
   autocmd! startify *
   autocmd startify CursorMoved <buffer> call s:set_cursor()
   autocmd startify BufWipeout <buffer> autocmd! startify *
 
-  call cursor(6, 5)
+  call cursor(4, 5)
 endfunction
 
 " Function: s:set_cursor {{{1
@@ -109,10 +119,10 @@ function! s:set_cursor() abort
       call cursor(s:line_new, 5) " going down
     else
       let s:line_new -= 1
-      call cursor((s:line_new < 4 ? 4 : s:line_new), 5) " going up
+      call cursor((s:line_new < 2 ? 2 : s:line_new), 5) " going up
     endif
   else
-    call cursor((s:line_new < 4 ? 4 : 0), 5) " hold cursor in column
+    call cursor((s:line_new < 2 ? 2 : 0), 5) " hold cursor in column
   endif
 endfunction
 
