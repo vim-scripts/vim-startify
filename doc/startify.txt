@@ -1,4 +1,4 @@
-*startify.txt*                        Showing recently used files like a boss.
+*startify.txt*  Showing recently used stuff like a boss.
 *startify*
 
 
@@ -29,7 +29,7 @@ CONTENTS                                                     *startify-contents*
 ==============================================================================
 1. Intro                                                        *startify-intro*
 
-Startify is a zero-conf plugin which shows recently used files, bookmarks and
+Startify is a plugin that shows recently used files, bookmarks and
 sessions that were saved to a certain directory.
 
 
@@ -40,22 +40,28 @@ Startify basically provides two things:
 
 1) If you start Vim without giving any filenames to it (or pipe stuff to it so
    it reads from STDIN), startify will show a small but pretty start screen
-   which shows recently used files (using viminfo) and sessions by default.
+   that shows recently used files (using viminfo) and sessions by default.
 
    Additionally, you can define bookmarks, thus entries for files that always
-   should be available in the start screen.
+   should be available on the start screen.
 
    You can either navigate to a certain menu entry and hit enter or you just
    key in whatever is written between the square brackets on that line. You
    can even double-click anywhere on the line now.
 
-   Per default the startify buffer gets closed automatically, if an entry was
-   selected.
-
-   You can reopen the screen via :Startify.
-
-   Moreover, 'e' creates an empty buffer, 'i' creates an empty buffers and
+   In addition, 'e' creates an empty buffer, 'i' creates an empty buffer and
    jumps into insert mode, 'q' quits.
+
+   Moreover, you can open several files at one go. Navigate to an entry and
+   hit either 'b' (open in same window), 's' (open in split) or 'v' (open in
+   vertical split). You can do that for multiple entries. You can also mix
+   them. The order of the selections will be remembered. Afterwards execute
+   these actions via <cr>.
+
+   When the selection is finished, Startify will close automatically. You can
+   reopen the screen via :Startify.
+
+   And you can define your own custom ascii art header now!
 
 2) It eases handling of loading and saving sessions by only working with a
    certain directory. These commands are used for convenience:
@@ -64,24 +70,12 @@ Startify basically provides two things:
       :SSave    save a session
       :SDelete  delete a session
 
-The default settings are pretty sane, so it should work without any
-configuration.
-
 
 ==============================================================================
 3. Options                                                    *startify-options*
 
 Put these variables into your vimrc. The shown assignments are also the
 default values.
-
-============-
-
-    let g:startify_empty_buffer_key = ''
-
-This creates an additional, hidden mapping for the empty buffer.
-
-Example: let g:startify_empty_buffer_key = 'o'
-
 
 ============-
 
@@ -94,23 +88,34 @@ The default for Windows systems is '$HOME\vimfiles\session'.
 
 ============-
 
-    let g:startify_show_sessions = 1
+    let g:startify_lists = ['files', 'sessions', 'bookmarks']
 
-List saved sessions in g:startify_session_dir.
+At the moment startify can show these kind of lists:
 
+1) Most recently used files.
 
-============-
-
-    let g:startify_show_files = 1
-
-List recently used files using viminfo.
+   This lists the most recently used files using viminfo. The number of files
+   is limited by g:startify_files_number.
 
 
-============-
+2) Most recently changed files in the current directory.
 
-    let g:startify_show_files_number = 10
+   This lists the files from the current directory sorted by modification
+   time. The number of files is limited by g:startify_files_number.
 
-The amount of files to list.
+3) Bookmarks.
+
+   This lists bookmarks, thus hardcoded files that will always be shown.
+   Have a look at g:startify_bookmarks.
+
+4) Sessions.
+
+   This lists all the sessions saved in the directory
+   g:startify_session_dir.
+
+Therefore, to show all of them in the above order:
+
+    let g:startify_lists = ['files', 'dir', 'bookmarks', 'sessions']
 
 
 ============-
@@ -122,11 +127,27 @@ the start screen.
 
 Example: let g:startify_bookmarks = [ '~/.vimrc' ]
 
+
+============-
+
+    let g:startify_files_number = 10
+
+The number of files to list.
+
+
+============-
+
+    let g:startify_change_to_dir = 1
+
+When opening a file or bookmark, change to its directory.
+
+
 ============-
 
     let g:startify_skiplist = []
 
-A list of Vim regular expressions to filter recently used files.
+A list of Vim regular expressions to filter recently used files and files in
+the current directory.
 
 Example: let g:startify_skiplist = [
            \ 'COMMIT_EDITMSG',
@@ -143,6 +164,30 @@ Do not create the startify buffer, if this is a Vim server instance with a
 name contained in this list.
 
 Example: let g:startify_skiplist_server = [ 'GVIM' ]
+
+
+============-
+
+    let g:startify_empty_buffer_key = 'o'
+
+This creates an additional, hidden mapping for the empty buffer.
+
+Default: does not exist
+
+
+============-
+
+    let g:startify_enable_special = 1
+
+Show <empty buffer> and <quit>.
+
+
+============-
+
+    let g:startify_restore_position = 0
+
+Jump to the last cursor position when opening a file. You don't need this, if
+you already have this in your vimrc: |last-position-jump|.
 
 
 ============-
@@ -180,9 +225,25 @@ Best practices:
 
 ============-
 
-    let g:startify_enable_special = 1
+    let g:startify_custom_header = ''
 
-Don't show <empty buffer> and <quit>.
+This is a list of single-quoted strings to be shown before everything else.
+Every string will be written on its own line.
+
+NOTE: If a string contains ', you have to quote it with another '.
+
+Example:
+
+    let g:startify_custom_header = [
+                \ '   __      ___            ______ ____   ',
+                \ '   \ \    / (_)           |____  |___ \ ',
+                \ '    \ \  / / _ _ __ ___       / /  __) |',
+                \ '     \ \/ / | | ''_ ` _ \     / /  |__ <',
+                \ '      \  /  | | | | | | |   / /   ___) |',
+                \ '       \/   |_|_| |_| |_|  /_(_) |____/ ',
+                \ '',
+                \ '',
+                \ ]
 
 
 ==============================================================================
@@ -212,6 +273,7 @@ these groups:
 
     StartifyBracket         [,]
     StartifyFile            the actual file
+    StartifyHeader          the custom header
     StartifyNumber          the numbers between []
     StartifyPath            the path to a file
     StartifySlash           slashes in paths
@@ -220,6 +282,7 @@ these groups:
 Example: (my terminal emulator supports 256 colors)
 
     hi StartifyBracket ctermfg=240
+    hi StartifyHeader  ctermfg=203
     hi StartifyNumber  ctermfg=215
     hi StartifyPath    ctermfg=245
     hi StartifySlash   ctermfg=240
@@ -264,13 +327,13 @@ getting feedback! Same for issues or feature requests.
 
 Thank you for flying mhi airlines. Get the Vim on!
 
+You can also follow me on Twitter: @_mhinz_
+
 
 ==============================================================================
 8. License                                                    *startify-license*
 
-Copyright © Marco Hinz. Distributed under the same terms as Vim itself.
-
-See |license|.
+MIT license. Copyright (c) 2013 Marco Hinz.
 
 
 vim: tw=78

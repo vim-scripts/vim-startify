@@ -1,46 +1,80 @@
-vim-startify
-------------
-
-Startify basically provides two things:
-
-_1)_ If you start Vim without giving any filenames to it (or pipe stuff to it so
-   it reads from STDIN), startify will show a small but pretty start screen
-   which shows recently used files (using viminfo) and sessions by default.
-
-   Additionally, you can define bookmarks, thus entries for files that always
-   should be available in the start screen.
-
-   You can either navigate to a certain menu entry or you just key in whatever
-   is written between the square brackets on that line. You can even
-   double-click anywhere on the line now.
-
-   Per default the startify buffer gets closed automatically, if an entry was
-   selected.
-
-   You can reopen the screen via :Startify.
-
-   Moreover, 'e' creates an empty buffer, 'i' creates an empty buffers and
-   jumps into insert mode, 'q' quits.
-
-_2)_ It eases handling of loading and saving sessions by only working with a
-   certain directory. These commands are used for convenience:
-
-      :SLoad    load a session
-      :SSave    save a session
-      :SDelete  delete a session
-
-_NOTE_: These commands can also take session names directly as an argument. You can
-also make use of completion via `<c-d>` and `<tab>`.
-
-The default settings are pretty sane, so it should work without any
-configuration.
-
 ![Example:startify in action](https://github.com/mhinz/vim-startify/raw/master/startify.png)
 
-_NOTE_: The colors shown in the screenshot are not the default. If you want to
-tune the default colors, you can overwrite the highlight groups used by startify
-in your vimrc. Have a look at `:h startify-colors`, after installing the plugin.
-Moreover, g:startify_enable_special is set to 0.
+This is it. A start screen for Vim.
+
+What does it provide?
+---------------------
+
+#### 1) It shows things on start!
+
+If you start Vim without giving any filenames or piping text to it, Startify
+will show a pretty start screen that shows a configurable list of items:
+
+---
+
+__Custom header__ ( _empty by default_ ):
+
+How about some ASCII art action?
+
+---
+
+__Files from directory__ ( _disabled by default_ ):
+
+This lists all files from the current directory sorted by modification time.
+
+---
+
+__Recently used files__ ( _enabled by default_ ):
+
+This uses the viminfo file to get a list of most recently used files. The list
+can also be filtered.
+
+---
+
+__Sessions__ ( _enabled by default_ ):
+
+This will list all your sessions from a certain directory.
+
+---
+
+__Bookmarks__ ( _empty by default_ ):
+
+Additionally, you can define bookmarks, thus entries for files that always
+should be available on the start screen.
+
+---
+
+See `:h startify-options` for more information.
+
+#### 2) Easy session handling
+
+It eases handling of loading, saving and deleting sessions by always working
+with one and the same directory. These commands are used for convenience:
+
+    :SLoad    load a session
+    :SSave    save a session
+    :SDelete  delete a session
+
+See `:h startify-commands` for more information.
+
+#### 3) Easy but powerful entry handling
+
+You can either navigate to a certain entry using `j`/`k` and hit `<cr>` or just
+key in whatever is written between the square brackets on that line. You can
+even double-click anywhere on the line.
+
+Moreover, you can open several files at one go! Navigate to an entry and hit
+either `b` (open in same window), `s` (open in split) or `v` (open in vertical
+split) for marking it. You can mark several entries and also mix different
+markers. Afterwards execute all the markers in the order they were given via
+`<cr>`.
+
+In case you don't want to open a file, there is also `e` for creating an empty
+buffer, `i` for creating an empty buffer and jumping into insert mode and `q`
+for quitting.
+
+When one or more files were opened by Startify, it will close automatically. You
+can always reopen the screen via `:Startify`.
 
 Feedback, please!
 -----------------
@@ -48,28 +82,25 @@ Feedback, please!
 If you like any of my plugins, star it on github. This is a great way of getting
 feedback! Same for issues or feature requests.
 
-Thank you for flying mhi airlines. Get the Vim on!
+Thank you for flying mhi airlines. Get your Vim on!
 
-Installation
-------------
+You can also follow me on Twitter: [@_mhinz_](https://twitter.com/_mhinz_)
 
-If you have no preferred installation method, I suggest using tpope's pathogen:
+Installation & Documentation
+----------------------------
 
-1. git clone https://github.com/tpope/vim-pathogen ~/.vim/bundle/vim-pathogen
-1. mkdir -p ~/.vim/autoload && cd ~/.vim/autoload
-1. ln -s ../bundle/vim-pathogen/autoload/pathogen.vim
+If you have no preferred installation method, I suggest using tpope's
+[pathogen](https://github.com/tpope/vim-pathogen). Afterwards installing
+vim-startify is as easy as pie:
 
-Afterwards installing vim-startify is as easy as pie:
+    $ git clone https://github.com/mhinz/vim-startify ~/.vim/bundle/vim-startify
+    $ vim
 
-2. git clone https://github.com/mhinz/vim-startify ~/.vim/bundle/vim-startify
-2. start Vim
-2. :Helptags
-2. :h startify
+It works without any configuration, but you might want to look into the
+documentation for further customization:
 
-Documentation
--------------
-
-`:h startify`
+    :Helptags  " rebuilding tags files
+    :h startify
 
 Author
 ------
@@ -79,5 +110,4 @@ Marco Hinz `<mh.codebro@gmail.com>`
 License
 -------
 
-Copyright © Marco Hinz. Distributed under the same terms as Vim itself. See
-`:help license`.
+MIT license. Copyright (c) 2013 Marco Hinz.
